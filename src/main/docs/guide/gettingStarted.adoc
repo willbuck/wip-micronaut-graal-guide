@@ -1,1 +1,7 @@
+Prerequisites:
+- AWS Account (link to start one?)
+- Install SDKMAN
+    - from which, grab micronaut, gradle, grails
+
 In this guide you are going to...
+1

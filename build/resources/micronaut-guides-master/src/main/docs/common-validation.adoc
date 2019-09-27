@@ -1,0 +1,11 @@
+Micronaut’s validation is built on with the standard framework – JSR 380, also known as Bean Validation 2.0.
+
+Hibernate Validator is a reference implementation of the validation API.
+
+Add the next snippet to `build.gradle`
+
+[source,java]
+.build.gradle
+----
+include::{sourceDir}/build.gradle[tag=validator,indent=0]
+----
