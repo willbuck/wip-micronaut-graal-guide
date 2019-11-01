@@ -1,1 +1,5 @@
-TODO: Complete the guide
+We'll be re-implementing the VAT validator of the previous guide.
+
+This time we'll be using the following command to create our app:
+
+`mn create-app foo --features aws-api-gateway-graal`

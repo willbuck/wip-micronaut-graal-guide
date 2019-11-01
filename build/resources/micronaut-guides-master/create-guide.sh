@@ -8,7 +8,7 @@ if [[ -n $GUIDE_NAME ]]; then
     mkdir $GUIDE_NAME
     cd $GUIDE_NAME
     echo
-    grails create-app $GUIDE_NAME $PROFILE $PROFILE_NAME
+    mn create-app $GUIDE_NAME $PROFILE $PROFILE_NAME
     mv $GUIDE_NAME initial
     mkdir complete
     cp -rf initial/* complete/

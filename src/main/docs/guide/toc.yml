@@ -1,7 +1,7 @@
 gettingStarted: 
-  title: Getting Started
-  requirements: What you will need
-  howto: How to complete the guide
+  title: Introduction
+  requirements: What you'll need to get started
+  solution: Solution
 writingTheApp:
   title: Writing the Application
 runningTheApp:

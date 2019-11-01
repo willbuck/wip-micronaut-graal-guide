@@ -1,1 +1,14 @@
 include::{commondir}/common-requirements.adoc[]
+
+You will also want the following:
+
+- An AWS Account https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/[here's how to start one]
+- The Micronaut CLI tool, installed via
+
+`sdk install micronaut`
+
+(https://sdkman.io/install[Here's a link to install sdkman if you don't already have it])
+
+- https://docs.docker.com/v17.09/engine/installation/[local install of docker, which is used to build the lambda]
+- To test the architecture locally, you'll want the https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html[AWS SAM CLI tool]
+- To deploy your code you'll also want the https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html[AWS CLI tool]

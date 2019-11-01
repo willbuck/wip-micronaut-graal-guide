@@ -1,7 +1,16 @@
-Prerequisites:
-- AWS Account (link to start one?)
-- Install SDKMAN
-    - from which, grab micronaut, gradle, grails
+A previous guide written by https://twitter.com/sdelamo[Sergio Delamo] walked us through how to
+get started with Micronaut and AWS Lambda, the serverless, functional offering from Amazon that allows
+you to breakdown a typical microservices architecture into what I might call "Amazon Legos". Bite-sized,
+on-demand pieces that allow businesses to run infrequently used pieces of code very cheaply.
 
-In this guide you are going to...
-1
+However, the one disadvantage of this pattern is that Java runtime in AWS Lambda can have long
+"cold startup" times (the first time a service is used over a 5-20 minute period).
+
+This is where https://www.graalvm.org/[GraalVM] enters the picture. Allowing compilation of JVM languages
+to *native* byte-code, Graal can be run in AWS Lambda's "Custom Runtime" environment and significantly improve
+cold startup times.
+
+In this guide you are going to expand the previous example's learnings to...
+1. Build a GraalVM Micronaut Lambda, complete with API server-like routing via https://aws.amazon.com/api-gateway/[AWS's API Gateway]
+2. Learn how to run the Lambda locally in a facsimile of AWS's infrastructure through a cli-tool called SAM.
+3. Learn how to deploy and manage the Lambda via AWS's cloudfront cli tools.

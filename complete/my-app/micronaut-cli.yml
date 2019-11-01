@@ -1,5 +1,0 @@
-profile: service
-defaultPackage: my.app
----
-testFramework: junit
-sourceLanguage: java

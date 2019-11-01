@@ -56,11 +56,11 @@
         <div id="table-of-content">
             <h3>Table of Contents</h3>
             
-            <div class="toc-item" style="margin-left:0px"><a href="#gettingStarted"><strong>1</strong><span>Getting Started</span></a></div>
+            <div class="toc-item" style="margin-left:0px"><a href="#gettingStarted"><strong>1</strong><span>Introduction</span></a></div>
             
-            <div class="toc-item" style="margin-left:10px"><a href="#requirements"><strong>1.1</strong><span>What you will need</span></a></div>
+            <div class="toc-item" style="margin-left:10px"><a href="#requirements"><strong>1.1</strong><span>What you'll need to get started</span></a></div>
             
-            <div class="toc-item" style="margin-left:10px"><a href="#howto"><strong>1.2</strong><span>How to complete the guide</span></a></div>
+            <div class="toc-item" style="margin-left:10px"><a href="#solution"><strong>1.2</strong><span>Solution</span></a></div>
             
             <div class="toc-item" style="margin-left:0px"><a href="#writingTheApp"><strong>2</strong><span>Writing the Application</span></a></div>
             
@@ -78,7 +78,7 @@
     </header>
     
 
-<h1 id="gettingStarted">1 Getting Started</h1>
+<h1 id="gettingStarted">1 Introduction</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-guides/micronaut-function-graalvm-aws-lambda-gateway/edit/master/src/main/docs/guide/gettingStarted.adoc"'>
@@ -88,11 +88,29 @@
 
 
 <div class="paragraph">
-<p>In this guide you are going to&#8230;&#8203;</p>
+<p>A previous guide written by <a href="https://twitter.com/sdelamo">Sergio Delamo</a> walked us through how to
+get started with Micronaut and AWS Lambda, the serverless, functional offering from Amazon that allows
+you to breakdown a typical microservices architecture into what I might call "Amazon Legos". Bite-sized,
+on-demand pieces that allow businesses to run infrequently used pieces of code very cheaply.</p>
+</div>
+<div class="paragraph">
+<p>However, the one disadvantage of this pattern is that Java runtime in AWS Lambda can have long
+"cold startup" times (the first time a service is used over a 5-20 minute period).</p>
+</div>
+<div class="paragraph">
+<p>This is where <a href="https://www.graalvm.org/">GraalVM</a> enters the picture. Allowing compilation of JVM languages
+to <strong>native</strong> byte-code, Graal can be run in AWS Lambda&#8217;s "Custom Runtime" environment and significantly improve
+cold startup times.</p>
+</div>
+<div class="paragraph">
+<p>In this guide you are going to expand the previous example&#8217;s learnings to&#8230;&#8203;
+1. Build a GraalVM Micronaut Lambda, complete with API server-like routing via <a href="https://aws.amazon.com/api-gateway/">AWS&#8217;s API Gateway</a>
+2. Learn how to run the Lambda locally in a facsimile of AWS&#8217;s infrastructure through a cli-tool called SAM.
+3. Learn how to deploy and manage the Lambda via AWS&#8217;s cloudfront cli tools.</p>
 </div>
 
 
-<h2 id="requirements">1.1 What you will need</h2>
+<h2 id="requirements">1.1 What you'll need to get started</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-guides/micronaut-function-graalvm-aws-lambda-gateway/edit/master/src/main/docs/guide/requirements.adoc"'>
@@ -117,19 +135,51 @@
 </li>
 </ul>
 </div>
+<div class="paragraph">
+<p>You will also want the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>An AWS Account <a href="https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/">here&#8217;s how to start one</a></p>
+</li>
+<li>
+<p>The Micronaut CLI tool, installed via</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><code>sdk install micronaut</code></p>
+</div>
+<div class="paragraph">
+<p>(<a href="https://sdkman.io/install">Here&#8217;s a link to install sdkman if you don&#8217;t already have it</a>)</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.docker.com/v17.09/engine/installation/">local install of docker, which is used to build the lambda</a></p>
+</li>
+<li>
+<p>To test the architecture locally, you&#8217;ll want the <a href="https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html">AWS SAM CLI tool</a></p>
+</li>
+<li>
+<p>To deploy your code you&#8217;ll also want the <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html">AWS CLI tool</a></p>
+</li>
+</ul>
+</div>
 
 
-<h2 id="howto">1.2 How to complete the guide</h2>
+<h2 id="solution">1.2 Solution</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-guides/micronaut-function-graalvm-aws-lambda-gateway/edit/master/src/main/docs/guide/howto.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-guides/micronaut-function-graalvm-aws-lambda-gateway/edit/master/src/main/docs/guide/solution.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
 
 
 <div class="paragraph">
-<p>To get started do the following:</p>
+<p>We recommend you to follow the instructions in the next sections and create the app step by step. However, you can go right to the <strong>completed example</strong>.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -144,48 +194,12 @@
 <div class="ulist">
 <ul>
 <li>
-<p>Clone the <a href="https://git-scm.com/">Git</a> repository:<br>
-<code>git clone <a href="https://github.com/micronaut-guides/micronaut-function-graalvm-aws-lambda-gateway.git" class="bare">https://github.com/micronaut-guides/micronaut-function-graalvm-aws-lambda-gateway.git</a></code></p>
+<p>Clone the <a href="https://git-scm.com/">Git</a> repository: <code>git clone <a href="https://github.com/micronaut-guides/micronaut-function-graalvm-aws-lambda-gateway.git" class="bare">https://github.com/micronaut-guides/micronaut-function-graalvm-aws-lambda-gateway.git</a></code></p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>The Micronaut guides repositories contain two folders:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>initial</code>  Initial project. Often a simple Micronaut app with some additional code to give you a head-start.</p>
-</li>
-<li>
-<p><code>complete</code> A completed example. It is the result of working through the steps presented by the guide and applying those changes to the <code>initial</code> folder.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>To complete the guide, go to the <code>initial</code> folder</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>cd</code> into <code>micronaut-guides/micronaut-function-graalvm-aws-lambda-gateway/initial</code></p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>and follow the instructions in the next sections.</p>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-You can go right to the <strong>completed example</strong> if you <code>cd</code> into <code>micronaut-guides/micronaut-function-graalvm-aws-lambda-gateway/complete</code>
-</td>
-</tr>
-</table>
+<p>Then, <code>cd</code> into the <code>complete</code> folder which you will find in the root project of the downloaded/cloned project.</p>
 </div>
 
 
@@ -199,7 +213,13 @@ You can go right to the <strong>completed example</strong> if you <code>cd</code
 
 
 <div class="paragraph">
-<p>TODO: Complete the guide</p>
+<p>We&#8217;ll be re-implementing the VAT validator of the previous guide.</p>
+</div>
+<div class="paragraph">
+<p>This time we&#8217;ll be using the following command to create our app:</p>
+</div>
+<div class="paragraph">
+<p><code>mn create-app foo --features aws-api-gateway-graal</code></p>
 </div>
 
 
