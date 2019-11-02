@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>2 Writing the Application null</title>
+    <title>2.2 VAT SOAP Service null</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -25,17 +25,17 @@ function addJsClass() {
         <ul>
             <li>
                 <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
-                    <a href="../guide/index.html" class="button">Table of contents</a>
+                    <a href="../../guide/index.html" class="button">Table of contents</a>
 
                     <div id="nav-summary-childs" style="display:none;">
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/gettingStarted.html"><strong>1</strong><span>Introduction</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/gettingStarted.html"><strong>1</strong><span>Introduction</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/writingTheApp.html"><strong>2</strong><span>Writing the Application</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/writingTheApp.html"><strong>2</strong><span>Writing the Application</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/runningTheApp.html"><strong>3</strong><span>Running the Application</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/runningTheApp.html"><strong>3</strong><span>Running the Application</span></a>
                         </div>
                         
                     </div>
@@ -56,169 +56,25 @@ function addJsClass() {
             <div id="main" class="corner-all">
 
                 
-                    <div class="toc-item prev-left"><a href="../guide/gettingStarted.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
+                    <div class="toc-item prev-left"><a href="../../guide/gettingStarted.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
                 
 
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
                 
-                    <div class="toc-item next-right"><a href="../guide/runningTheApp.html"><strong>3</strong><span>Running the Application</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../../guide/runningTheApp.html"><strong>3</strong><span>Running the Application</span> >></a></div>
                 
 
 
                 <div class="project">
-                    <h1>2 Writing the Application</h1>
+                    <h1>2.2 VAT SOAP Service</h1>
 
                     <p><strong>Version:</strong> null</p>
                 </div>
 
                 
-                <div id="table-of-content">
-                    <h2>Table of Contents</h2>
-                    
-                    <div class="toc-item" style="margin-left:0px"><a href="#vatpojos"><strong>2.1</strong><span>POJOs</span></a>
-                    </div>
-                    
-                    <div class="toc-item" style="margin-left:0px"><a href="#soap"><strong>2.2</strong><span>VAT SOAP Service</span></a>
-                    </div>
-                    
-                    <div class="toc-item" style="margin-left:0px"><a href="#controller"><strong>2.3</strong><span>Putting it all together in the Controller</span></a>
-                    </div>
-                    
-                </div>
-                
 
                 
-
-<h1 id="writingTheApp">2 Writing the Application</h1>
-
-<div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-guides/micronaut-function-graalvm-aws-lambda-gateway/edit/master/src/main/docs/guide/writingTheApp.adoc"'>
-        <i class='fa fa-pencil-square-o'></i> Improve this doc
-    </button>
-</div>
-
-
-<div class="paragraph">
-<p>We&#8217;ll be re-implementing the VAT validator of the previous guide, but as a controller instead of a fuction.</p>
-</div>
-<div class="paragraph">
-<p>That means we&#8217;ll be using the <code>aws-api-gateway-graal</code> feature starter of a standard Micronaut App.</p>
-</div>
-<div class="paragraph">
-<p>Use the following command to create our app:</p>
-</div>
-<div class="paragraph">
-<p><code>mn create-app example.micronaut.vat-validator-graal --features aws-api-gateway-graal</code></p>
-</div>
-
-
-<h2 id="vatpojos">2.1 POJOs</h2>
-
-<div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-guides/micronaut-function-graalvm-aws-lambda-gateway/edit/master/src/main/docs/guide/writingTheApp/vatpojos.adoc"'>
-        <i class='fa fa-pencil-square-o'></i> Improve this doc
-    </button>
-</div>
-
-
-<div class="paragraph">
-<p>Just as in the other guide, we&#8217;ll first need to create a POJO to encapsulate the validation request:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-json" data-lang="json">{
-  "memberStateCode": "es",
-  "vatNumber": "B86412491"
-}</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">vat-validator-graal/src/main/java/example/micronaut/VatValidationRequest.java</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package example.micronaut;
-
-import java.io.Serializable;
-import io.micronaut.core.annotation.Introspected;
-
-@Introspected
-public class VatValidationRequest implements Serializable {
-    private String memberStateCode;
-    private String vatNumber;
-
-    public VatValidationRequest() {
-    }
-
-    public VatValidationRequest(String memberStateCode, String vatNumber) {
-        this.memberStateCode = memberStateCode;
-        this.vatNumber = vatNumber;
-    }
-
-    public String getMemberStateCode() {
-        return memberStateCode;
-    }
-
-    public void setMemberStateCode(String memberStateCode) {
-        this.memberStateCode = memberStateCode;
-    }
-
-    public String getVatNumber() {
-        return vatNumber;
-    }
-
-    public void setVatNumber(String vatNumber) {
-        this.vatNumber = vatNumber;
-    }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Then we&#8217;ll add another POJO to encapsulate the expected response. Note: we add a <code>Boolean valid</code> property.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-json" data-lang="json">{
-  "memberStateCode": "es",
-  "vatNumber": "B86412491",
-  "valid": true
-}</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">vat-validator-graal/src/main/java/example/micronaut/VatValidation.java</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package example.micronaut;
-
-import java.io.Serializable;
-import java.util.Objects;
-
-public class VatValidation extends VatValidationRequest implements Serializable {
-    private Boolean valid;
-
-    public VatValidation() {
-
-    }
-
-    public VatValidation(String memberStateCode, String vatNumber, Boolean valid) {
-        super(memberStateCode, vatNumber);
-        this.valid = valid;
-    }
-
-    public Boolean getValid() {
-        return valid;
-    }
-
-    public void setValid(Boolean valid) {
-        this.valid = valid;
-    }
-
-    public Boolean isValid() {
-        return valid;
-    }
-}</code></pre>
-</div>
-</div>
-
 
 <h2 id="soap">2.2 VAT SOAP Service</h2>
 
@@ -344,28 +200,11 @@ public class VatService {
 </div>
 
 
-<h2 id="controller">2.3 Putting it all together in the Controller</h2>
-
-<div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-guides/micronaut-function-graalvm-aws-lambda-gateway/edit/master/src/main/docs/guide/writingTheApp/controller.adoc"'>
-        <i class='fa fa-pencil-square-o'></i> Improve this doc
-    </button>
-</div>
-
-
-<div class="paragraph">
-<p>So unlike the previous guide, this lambda operates just like a standard Micronaut app.</p>
-</div>
-<div class="paragraph">
-<p>We&#8217;ll replace the <code>ExampleController.java</code> with with a <code>VatValidatorController</code>, similar to the</p>
-</div>
-
-
                 <div style="clear:both;margin-top:15px;"></div>
                 
-                    <div class="toc-item prev-left"><a href="../guide/gettingStarted.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
+                    <div class="toc-item prev-left"><a href="../../guide/gettingStarted.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
                 
-                    <div class="toc-item next-right"><a href="../guide/runningTheApp.html"><strong>3</strong><span>Running the Application</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../../guide/runningTheApp.html"><strong>3</strong><span>Running the Application</span> >></a></div>
                 
                 <div style="clear:both"></div>
             </div>
@@ -373,7 +212,7 @@ public class VatService {
         <td id="col2">
             <div class="local clearfix">
                 <div class="local-title">
-                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <a href="../../guide/index.html" target="mainFrame">Quick Reference</a>
                     <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
                 </div>
                 <div class="menu">

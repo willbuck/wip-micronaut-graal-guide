@@ -1,0 +1,3 @@
+So unlike the previous guide, this lambda operates just like a standard Micronaut app.
+
+We'll replace the `ExampleController.java` with with a `VatValidatorController`, similar to the

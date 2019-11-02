@@ -4,5 +4,8 @@ gettingStarted:
   solution: Solution
 writingTheApp:
   title: Writing the Application
+  vatpojos: POJOs
+  soap: VAT SOAP Service
+  controller: Putting it all together in the Controller
 runningTheApp:
   title: Running the Application

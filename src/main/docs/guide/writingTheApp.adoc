@@ -1,5 +1,7 @@
-We'll be re-implementing the VAT validator of the previous guide.
+We'll be re-implementing the VAT validator of the previous guide, but as a controller instead of a fuction.
 
-This time we'll be using the following command to create our app:
+That means we'll be using the `aws-api-gateway-graal` feature starter of a standard Micronaut App.
 
-`mn create-app foo --features aws-api-gateway-graal`
+Use the following command to create our app:
+
+`mn create-app example.micronaut.vat-validator-graal --features aws-api-gateway-graal`
