@@ -10,10 +10,10 @@ Resources:
     Properties:
       Handler: not.used.in.provided.runtime
       Runtime: provided
-      CodeUri: s3://oci-oss-work/69ddbad2afa313cf34e663e36d22a230
-      MemorySize: 128
+      CodeUri: s3://oci-oss-work/f4004097afe871099329b1828df85578
+      MemorySize: 256
       Policies: AWSLambdaBasicExecutionRole
-      Timeout: 15
+      Timeout: 30
       Events:
         GetResource:
           Type: Api

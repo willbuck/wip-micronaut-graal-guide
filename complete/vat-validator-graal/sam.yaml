@@ -11,9 +11,9 @@ Resources:
       Handler: not.used.in.provided.runtime
       Runtime: provided
       CodeUri: build/function.zip
-      MemorySize: 128
+      MemorySize: 256
       Policies: AWSLambdaBasicExecutionRole
-      Timeout: 15
+      Timeout: 30
       Events:
         GetResource:
           Type: Api
