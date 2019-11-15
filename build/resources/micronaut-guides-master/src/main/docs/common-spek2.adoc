@@ -8,13 +8,8 @@ include::{sourceDir}/gradle.properties[]
 ----
 
 [source,groovy]
-.bookcatalogue/build.gradle
+.complete/build.gradle
 ----
-repositories {
-...
-..
-include::{sourceDir}/build.gradle[tag=spekrepository]
-}
 dependencies {
     ...
     ..
@@ -22,6 +17,4 @@ dependencies {
 include::{sourceDir}/build.gradle[tag=spek]
 }
 
-include::{sourceDir}/build.gradle[tag=junitplatform]
 ----
-

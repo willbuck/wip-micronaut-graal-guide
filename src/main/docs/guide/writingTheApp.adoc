@@ -1,7 +1,9 @@
-We'll be re-implementing the VAT validator of the previous guide, but as a controller instead of a fuction.
+We'll be keeping it simple and creating a controller to find all the prime numbers less than N,
+using the https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes[Sieve of Eratosthenes].
 
-That means we'll be using the `aws-api-gateway-graal` feature starter of a standard Micronaut App.
+To do this, we'll be using the `aws-api-gateway-graal` feature starter of a standard Micronaut App,
+which scaffolds a lot of what we need to deploy an AWS Lambda in a custom runtime w/ API Gateway triggers.
 
 Use the following command to create our app:
 
-`mn create-app example.micronaut.vat-validator-graal --features aws-api-gateway-graal`
+`mn create-app example.micronaut.prime-finder --features aws-api-gateway-graal`

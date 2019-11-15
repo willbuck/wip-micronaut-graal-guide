@@ -1,0 +1,34 @@
+NOTE: This step is optional. To follow along, you'll need the
+https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html[AWS SAM CLI tool]
+installed locally.
+
+The *S* erverless *A* pplication *M* odel, or https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html[SAM],
+is a framework for defining an application using a serverless architecture.
+
+It is also a CLI tool provided by Amazon to mock the AWS environment locally.
+
+This is going to allow us to run our Micronaut app as a graal native image, within an AWS Lambda custom runtime, all on our own machine.
+
+The Micronaut team have provided a simple shell script in the `aws-api-gateway-graal` feature called `sam-local.sh`, which
+builds the app into a Graal native image via Docker and packages it with the required `bootstrap` file for AWS Lambda custom runtimes into a simple `zip`.
+
+It then executes the SAM CLI tool with the (also included) `sam.yaml` file, which describes the Cloudformation architecture of our Serverless
+application (in this case, it is simple one endpoint, run via Lambda and triggered via the API Gateway)
+
+[source,bash]
+.prime-finder/sam-local.sh
+----
+include::{sourceDir}/prime-finder/sam-local.sh[]
+----
+<1> We build the application zip in a docker container (see the dockerfile below)
+<2> This extracts the `function.zip` file built by the docker container to the `build/` directory, for use by `sam-local`
+<3> This is the command to run our infrastructure locally
+
+Try running this yourself, via
+
+`./sam-local.sh`
+
+And then (after some time, building the native image in docker and orchestrating the SAM environment can take a couple minutes),
+try `curl` ing your endpoint (it should start up on port 3000 within the SAM docker container, forwarded to your machine)
+
+`curl localhost:3000/find-primes-below/999`

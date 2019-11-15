@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>1.1 What you'll need to get started null</title>
+    <title>3.1 It's just like any other app null</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -56,16 +56,16 @@ function addJsClass() {
             <div id="main" class="corner-all">
 
                 
+                    <div class="toc-item prev-left"><a href="../../guide/writingTheApp.html">&lt;&lt; <strong>2</strong><span>Writing the Application</span></a></div>
+                
 
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
                 
-                    <div class="toc-item next-right"><a href="../../guide/writingTheApp.html"><strong>2</strong><span>Writing the Application</span> >></a></div>
-                
 
 
                 <div class="project">
-                    <h1>1.1 What you'll need to get started</h1>
+                    <h1>3.1 It's just like any other app</h1>
 
                     <p><strong>Version:</strong> null</p>
                 </div>
@@ -74,71 +74,37 @@ function addJsClass() {
 
                 
 
-<h2 id="requirements">1.1 What you'll need to get started</h2>
+<h2 id="simpleRun">3.1 It's just like any other app</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-guides/micronaut-function-graalvm-aws-lambda-gateway/edit/master/src/main/docs/guide/requirements.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-guides/micronaut-function-graalvm-aws-lambda-gateway/edit/master/src/main/docs/guide/runningTheApp/simpleRun.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
 
 
 <div class="paragraph">
-<p>To complete this guide, you will need the following:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Some time on your hands</p>
-</li>
-<li>
-<p>A decent text editor or IDE</p>
-</li>
-<li>
-<p>JDK 1.8 or greater installed with <code>JAVA_HOME</code> configured appropriately</p>
-</li>
-</ul>
-</div>
-<div class="sect2">
-<h3 id="_you_will_also_want_the_following">You will also want the following:</h3>
-<div class="ulist">
-<ul>
-<li>
-<p>An AWS Account <a href="https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/">(here&#8217;s how to start one)</a></p>
-</li>
-<li>
-<p>A local install of <a href="https://docs.docker.com/v17.09/engine/installation/">docker</a>, which is used to build the lambda</p>
-</li>
-<li>
-<p>The Micronaut CLI tool, installed via</p>
-</li>
-</ul>
+<p>For starters, it&#8217;s worth pointing out briefly that at the core, this is just like any other
+Micronaut app you might build. To test changes in functionality quickly and locally, we can run
+<code>./gradlew run</code> just like an app built without the <code>--features aws-api-gateway-graal</code>.</p>
 </div>
 <div class="paragraph">
-<p><code>sdk install micronaut</code></p>
+<p>Take this opportunity quickly to ensure you&#8217;ve been following along successfully and start the app.</p>
 </div>
 <div class="paragraph">
-<p>(<a href="https://sdkman.io/install">Here&#8217;s a link to install sdkman if you don&#8217;t already have it</a>)</p>
+<p><code>./gradlew run</code></p>
 </div>
+<div class="paragraph">
+<p>Then, try out a few <code>curl</code> commands (or whichever http client you like to test APIs best)!</p>
 </div>
-<div class="sect2">
-<h3 id="_you_may_also_optionally_want">You may also, optionally, want</h3>
-<div class="ulist">
-<ul>
-<li>
-<p>The AWS <a href="https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html">SAM CLI tool</a>, to test deploying the Lambda architecture locally (so there&#8217;s no surprises in AWS proper!)</p>
-</li>
-<li>
-<p>The <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html">AWS CLI tool</a>, which can be used to deploy your entire architecture from the command line</p>
-</li>
-</ul>
-</div>
+<div class="paragraph">
+<p><code>$ curl localhost:8080/find-primes-below/1000</code></p>
 </div>
 
 
                 <div style="clear:both;margin-top:15px;"></div>
                 
-                    <div class="toc-item next-right"><a href="../../guide/writingTheApp.html"><strong>2</strong><span>Writing the Application</span> >></a></div>
+                    <div class="toc-item prev-left"><a href="../../guide/writingTheApp.html">&lt;&lt; <strong>2</strong><span>Writing the Application</span></a></div>
                 
                 <div style="clear:both"></div>
             </div>

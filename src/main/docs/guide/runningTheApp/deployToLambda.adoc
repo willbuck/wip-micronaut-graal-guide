@@ -1,0 +1,17 @@
+Now it's time to try things out in AWS!
+
+NOTE: We've included a `deploy.sh` file that takes care of all of the following, if you'd prefer that to the web-based AWS Console.
+
+First we need to build the `zip` file that comprises our AWS Lambda custom runtime
+(if you followed along with the previous section, you can skip this as `sam-local.sh` already did it for you).
+
+[source,java]
+.Building the Function.zip deployable
+----
+  docker build . -t prime-finder
+  mkdir -p build
+  docker run --rm --entrypoint cat prime-finder  /home/application/function.zip > build/function.zip
+----
+
+Now we'll want to navigate to https://console.aws.amazon.com/lambda/home and click `Create function`
+

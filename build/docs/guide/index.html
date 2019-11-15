@@ -64,13 +64,17 @@
             
             <div class="toc-item" style="margin-left:0px"><a href="#writingTheApp"><strong>2</strong><span>Writing the Application</span></a></div>
             
-            <div class="toc-item" style="margin-left:10px"><a href="#vatpojos"><strong>2.1</strong><span>POJOs</span></a></div>
+            <div class="toc-item" style="margin-left:10px"><a href="#service"><strong>2.1</strong><span>PrimeFinderService</span></a></div>
             
-            <div class="toc-item" style="margin-left:10px"><a href="#soap"><strong>2.2</strong><span>VAT SOAP Service</span></a></div>
-            
-            <div class="toc-item" style="margin-left:10px"><a href="#controller"><strong>2.3</strong><span>Putting it all together in the Controller</span></a></div>
+            <div class="toc-item" style="margin-left:10px"><a href="#controller"><strong>2.2</strong><span>PrimeFinderController</span></a></div>
             
             <div class="toc-item" style="margin-left:0px"><a href="#runningTheApp"><strong>3</strong><span>Running the Application</span></a></div>
+            
+            <div class="toc-item" style="margin-left:10px"><a href="#simpleRun"><strong>3.1</strong><span>It's just like any other app</span></a></div>
+            
+            <div class="toc-item" style="margin-left:10px"><a href="#samLocal"><strong>3.2</strong><span>Running Lambda Locally via SAM</span></a></div>
+            
+            <div class="toc-item" style="margin-left:10px"><a href="#deployToLambda"><strong>3.3</strong><span>Deploying to AWS Lambda</span></a></div>
             
             <div style="clear:both" ></div>
         </div>
@@ -80,7 +84,7 @@
         <h1>Micronaut Functions in GraalVM Native Images deployed to AWS Lambda</h1>
         <p>Learn how to deploy a GraalVM Image of a Micronaut Function to AWS Lambda</p>
         <p><strong>Authors:</strong> Will Buck</p>
-        <p><strong>Micronaut Version:</strong> 1.2.2</p>
+        <p><strong>Micronaut Version:</strong> 1.2.6</p>
     </header>
     
 
@@ -109,10 +113,20 @@ to <strong>native</strong> byte-code, Graal can be run in AWS Lambda&#8217;s "Cu
 cold startup times.</p>
 </div>
 <div class="paragraph">
-<p>In this guide you are going to expand the previous example&#8217;s learnings to&#8230;&#8203;
-1. Build a GraalVM Micronaut Lambda, complete with API server-like routing via <a href="https://aws.amazon.com/api-gateway/">AWS&#8217;s API Gateway</a>
-2. Learn how to run the Lambda locally in a facsimile of AWS&#8217;s infrastructure through a cli-tool called SAM.
-3. Learn how to deploy and manage the Lambda via AWS&#8217;s cloudfront cli tools.</p>
+<p>In this guide you are going to expand the previous example&#8217;s learnings to&#8230;&#8203;</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Build a GraalVM Micronaut Lambda, complete with API server-like routing via <a href="https://aws.amazon.com/api-gateway/">AWS&#8217;s API Gateway</a></p>
+</li>
+<li>
+<p>Learn how to run the Lambda locally in a facsimile of AWS&#8217;s infrastructure through a cli-tool called SAM.</p>
+</li>
+<li>
+<p>Learn how to deploy and manage the Lambda via AWS&#8217;s cloudfront cli tools.</p>
+</li>
+</ol>
 </div>
 
 
@@ -141,13 +155,15 @@ cold startup times.</p>
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>You will also want the following:</p>
-</div>
+<div class="sect2">
+<h3 id="_you_will_also_want_the_following">You will also want the following:</h3>
 <div class="ulist">
 <ul>
 <li>
-<p>An AWS Account <a href="https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/">here&#8217;s how to start one</a></p>
+<p>An AWS Account <a href="https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/">(here&#8217;s how to start one)</a></p>
+</li>
+<li>
+<p>A local install of <a href="https://docs.docker.com/v17.09/engine/installation/">docker</a>, which is used to build the lambda</p>
 </li>
 <li>
 <p>The Micronaut CLI tool, installed via</p>
@@ -160,18 +176,19 @@ cold startup times.</p>
 <div class="paragraph">
 <p>(<a href="https://sdkman.io/install">Here&#8217;s a link to install sdkman if you don&#8217;t already have it</a>)</p>
 </div>
+</div>
+<div class="sect2">
+<h3 id="_you_may_also_optionally_want">You may also, optionally, want</h3>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://docs.docker.com/v17.09/engine/installation/">local install of docker, which is used to build the lambda</a></p>
+<p>The AWS <a href="https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html">SAM CLI tool</a>, to test deploying the Lambda architecture locally (so there&#8217;s no surprises in AWS proper!)</p>
 </li>
 <li>
-<p>To test the architecture locally, you&#8217;ll want the <a href="https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html">AWS SAM CLI tool</a></p>
-</li>
-<li>
-<p>To deploy your code you&#8217;ll also want the <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html">AWS CLI tool</a></p>
+<p>The <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html">AWS CLI tool</a>, which can be used to deploy your entire architecture from the command line</p>
 </li>
 </ul>
+</div>
 </div>
 
 
@@ -219,251 +236,117 @@ cold startup times.</p>
 
 
 <div class="paragraph">
-<p>We&#8217;ll be re-implementing the VAT validator of the previous guide, but as a controller instead of a fuction.</p>
+<p>We&#8217;ll be keeping it simple and creating a controller to find all the prime numbers less than N,
+using the <a href="https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes">Sieve of Eratosthenes</a>.</p>
 </div>
 <div class="paragraph">
-<p>That means we&#8217;ll be using the <code>aws-api-gateway-graal</code> feature starter of a standard Micronaut App.</p>
+<p>To do this, we&#8217;ll be using the <code>aws-api-gateway-graal</code> feature starter of a standard Micronaut App,
+which scaffolds a lot of what we need to deploy an AWS Lambda in a custom runtime w/ API Gateway triggers.</p>
 </div>
 <div class="paragraph">
 <p>Use the following command to create our app:</p>
 </div>
 <div class="paragraph">
-<p><code>mn create-app example.micronaut.vat-validator-graal --features aws-api-gateway-graal</code></p>
+<p><code>mn create-app example.micronaut.prime-finder --features aws-api-gateway-graal</code></p>
 </div>
 
 
-<h2 id="vatpojos">2.1 POJOs</h2>
+<h2 id="service">2.1 PrimeFinderService</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-guides/micronaut-function-graalvm-aws-lambda-gateway/edit/master/src/main/docs/guide/writingTheApp/vatpojos.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-guides/micronaut-function-graalvm-aws-lambda-gateway/edit/master/src/main/docs/guide/writingTheApp/service.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
 
 
 <div class="paragraph">
-<p>Just as in the other guide, we&#8217;ll first need to create a POJO to encapsulate the validation request:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-json" data-lang="json">{
-  "memberStateCode": "es",
-  "vatNumber": "B86412491"
-}</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">vat-validator-graal/src/main/java/example/micronaut/VatValidationRequest.java</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package example.micronaut;
-
-import java.io.Serializable;
-import io.micronaut.core.annotation.Introspected;
-
-@Introspected
-public class VatValidationRequest implements Serializable {
-    private String memberStateCode;
-    private String vatNumber;
-
-    public VatValidationRequest() {
-    }
-
-    public VatValidationRequest(String memberStateCode, String vatNumber) {
-        this.memberStateCode = memberStateCode;
-        this.vatNumber = vatNumber;
-    }
-
-    public String getMemberStateCode() {
-        return memberStateCode;
-    }
-
-    public void setMemberStateCode(String memberStateCode) {
-        this.memberStateCode = memberStateCode;
-    }
-
-    public String getVatNumber() {
-        return vatNumber;
-    }
-
-    public void setVatNumber(String vatNumber) {
-        this.vatNumber = vatNumber;
-    }
-}</code></pre>
-</div>
+<p>Just as any other Micronaut app, we&#8217;ll want to isolate the "business logic"  of how we compute
+the prime numbers to a service.</p>
 </div>
 <div class="paragraph">
-<p>Then we&#8217;ll add another POJO to encapsulate the expected response. Note: we add a <code>Boolean valid</code> property.</p>
+<p>As we mentioned previously, the most efficient algorithm to calculate the primes below a given
+number N is the <a href="https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes">Sieve of Eratosthenes</a>, which
+steps up from 2 to N and tosses out all the multiples of the given step, so that subsequent passes
+are working with only the leftover numbers on the next pass.</p>
+</div>
+<div class="paragraph">
+<p>See below for an adaption of
+<a href="https://www.geeksforgeeks.org/sieve-eratosthenes-0n-time-complexity/">this O(n) java implementation of the algorithm</a></p>
 </div>
 <div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-json" data-lang="json">{
-  "memberStateCode": "es",
-  "vatNumber": "B86412491",
-  "valid": true
-}</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">vat-validator-graal/src/main/java/example/micronaut/VatValidation.java</div>
+<div class="title">prime-finder/src/main/java/example.micronaut.PrimeFinderService.java</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java" data-lang="java">package example.micronaut;
-
-import java.io.Serializable;
-import java.util.Objects;
-
-public class VatValidation extends VatValidationRequest implements Serializable {
-    private Boolean valid;
-
-    public VatValidation() {
-
-    }
-
-    public VatValidation(String memberStateCode, String vatNumber, Boolean valid) {
-        super(memberStateCode, vatNumber);
-        this.valid = valid;
-    }
-
-    public Boolean getValid() {
-        return valid;
-    }
-
-    public void setValid(Boolean valid) {
-        this.valid = valid;
-    }
-
-    public Boolean isValid() {
-        return valid;
-    }
-}</code></pre>
-</div>
-</div>
-
-
-<h2 id="soap">2.2 VAT SOAP Service</h2>
-
-<div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-guides/micronaut-function-graalvm-aws-lambda-gateway/edit/master/src/main/docs/guide/writingTheApp/soap.adoc"'>
-        <i class='fa fa-pencil-square-o'></i> Improve this doc
-    </button>
-</div>
-
-
-<div class="paragraph">
-<p>VIES (<a href="http://ec.europa.eu/taxation_customs/vies/faq.html">VAT Information Exchange System</a>) is an electronic mean of validating VAT-identification numbers of economic operators registered in the European Union for cross border transactions on goods or services.</p>
-</div>
-<div class="paragraph">
-<p>For example, if you create an e-commerce Web application in the European union you would need to check the validity of the purchaser&#8217;s
-VAT Number in order to create a proper invoice.</p>
-</div>
-<div class="paragraph">
-<p>To automate the validation checks, the EU does not offer a REST endpoint but a SOAP service. Its WSDL file can be obtained <a href="http://ec.europa.eu/taxation_customs/vies/checkVatService.wsdl">here</a>.</p>
-</div>
-<div class="paragraph">
-<p><strong>SOAP</strong> (originally Simple Object Access Protocol) is a protocol specification for exchanging structured information in the implementation of web services in computer networks. Its purpose is to induce extensibility, neutrality and independence</p>
-</div>
-<div class="paragraph">
-<p>Create <code>VatService</code> to do a SOAP request to validate the VAT Number.</p>
-</div>
-<div class="paragraph">
-<p>To consume the SOAP service we could have use a SOAP library. However, the use case is so simple we are going to use the Micronaut HTTP Client and build
-the SOAP envelope manually.</p>
-</div>
-<div class="paragraph">
-<p>Add <code>http-client</code> dependency to <code>build.gradle</code></p>
-</div>
-<div class="listingblock">
-<div class="title">vat-validator-graal/build.gradle</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">    compile "io.micronaut:micronaut-http-client"</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Create a <code>VatService</code> which consumes the SOAP Service:</p>
-</div>
-<div class="listingblock">
-<div class="title">vat-validator-graal/src/main/java/example/micronaut/VatService.java</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package example.micronaut;
-
-import io.micronaut.http.HttpRequest;
-import io.micronaut.http.client.RxHttpClient;
-import io.micronaut.http.client.annotation.Client;
-import io.reactivex.Flowable;
-import io.reactivex.Single;
 
 import javax.inject.Singleton;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
-@Singleton <i class="conum" data-value="1"></i><b>(1)</b>
-public class VatService {
-    private static final String SERVER = "http://ec.europa.eu";
-    private static final String PATH = "/taxation_customs/vies/services/checkVatService";
-    private static final String VALID_XML_OPEN_TAG = "&lt;valid&gt;";
-    private static final String VALID_XML_CLOSE_TAG = "&lt;/valid&gt;";
+@Singleton
+class PrimeFinderService {
+    // Credit to https://www.geeksforgeeks.org/sieve-eratosthenes-0n-time-complexity/
+    // for this clever O(n) implementation of the Sieve
+    public final int MAX_SIZE = 1000001;
+    // isPrime[] : isPrime[i] is true if number is prime
+    // prime[] : stores all prime number less than N
+    // SPF[] that store smallest prime factor of number
+    // [for Exp : smallest prime factor of '8' and '16'
+    // is '2' so we put SPF[8] = 2 , SPF[16] = 2 ]
+    Vector&lt;Boolean&gt;isPrime = new Vector&lt;&gt;(MAX_SIZE);
+    Vector&lt;Integer&gt;SPF = new Vector&lt;&gt;(MAX_SIZE);
 
-    protected final RxHttpClient client;
-
-    public VatService(@Client("http://ec.europa.eu") RxHttpClient client) { <i class="conum" data-value="2"></i><b>(2)</b>
-        this.client = client;
-    }
-
-    public Single&lt;Boolean&gt; validateVat(String memberStateCode, String vatNumber) {
-        String soapEnvelope = soapEnvelope(memberStateCode, vatNumber);
-        HttpRequest request = HttpRequest.POST(SERVER+PATH, soapEnvelope)  <i class="conum" data-value="3"></i><b>(3)</b>
-                .contentType("application/soap+xml");
-
-        Flowable&lt;String&gt; response = client.retrieve(request, String.class);
-        return response.firstOrError().map(this::parseResponseToBoolean);
-    }
-
-    private Boolean parseResponseToBoolean(String response) {
-        if (!response.contains(VALID_XML_OPEN_TAG) || !response.contains(VALID_XML_CLOSE_TAG)) {
-            return false;
+    PrimeFinderService() {
+        // Init the isPrime and SPF vectors
+        for (int i = 0; i &lt; MAX_SIZE; i++){
+            isPrime.add(true);
+            SPF.add(2);
         }
-        int beginIndex = response.indexOf(VALID_XML_OPEN_TAG) + VALID_XML_OPEN_TAG.length();
-        String validResponse = response.substring(beginIndex, response.indexOf(VALID_XML_CLOSE_TAG));
-        return Boolean.valueOf(validResponse);
+        // 0 and 1 are not prime
+        isPrime.set(0, false);
+        isPrime.set(1, false);
     }
 
-    private String soapEnvelope(String memberStateCode, String vatNumber) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("&lt;?xml version=\"1.0\" encoding=\"UTF-8\"?&gt;");
-        sb.append("&lt;soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"&gt;");
-        sb.append("&lt;soapenv:Header/&gt;");
-        sb.append("&lt;soapenv:Body xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"&gt;");
-        sb.append("&lt;urn:checkVat xmlns:urn=\"urn:ec.europa.eu:taxud:vies:services:checkVat:types\"&gt;");
-        sb.append("&lt;urn:countryCode&gt;");
-        sb.append(memberStateCode);
-        sb.append("&lt;/urn:countryCode&gt;");
-        sb.append("&lt;urn:vatNumber&gt;");
-        sb.append(vatNumber);
-        sb.append("&lt;/urn:vatNumber&gt;");
-        sb.append("&lt;/urn:checkVat&gt;");
-        sb.append("&lt;/soapenv:Body&gt;");
-        sb.append("&lt;/soapenv:Envelope&gt;");
-        return sb.toString();
+    List&lt;Integer&gt; findPrimesLessThan(int n) {
+        // Fill in the rest of the entries
+        List&lt;Integer&gt;prime = new ArrayList&lt;&gt;();
+        for (int i = 2; i &lt; n; i++) {
+            // If isPrime[i] == True then i is
+            // prime number
+            if (isPrime.get(i)) {
+                // put i into prime[] vector
+                prime.add(i);
+
+                // A prime number is its own smallest
+                // prime factor
+                SPF.set(i, i);
+            }
+
+            // Remove all multiples of  i*prime[j] which are
+            // not prime by making isPrime[i*prime[j]] = false
+            // and put smallest prime factor of i*Prime[j] as prime[j]
+            // [for exp :let  i = 5, j = 0, prime[j] = 2 [ i*prime[j] = 10]
+            // so smallest prime factor of '10' is '2' that is prime[j] ]
+            // this loop run only one time for number which are not prime
+            for (int j = 0;
+                 j &lt; prime.size() &amp;&amp;
+                         i * prime.get(j) &lt; n &amp;&amp; prime.get(j) &lt;= SPF.get(i);
+                 j++) {
+                isPrime.set(i * prime.get(j), false);
+
+                // put smallest prime factor of i*prime[j]
+                SPF.set(i * prime.get(j), prime.get(j));
+            }
+        }
+        return prime;
     }
 }</code></pre>
 </div>
 </div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Use <code>javax.inject.Singleton</code> to designate a class a a singleton</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Constructor Injection of Micronaut RxClient</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Define a POST Request.</td>
-</tr>
-</table>
-</div>
 
 
-<h2 id="controller">2.3 Putting it all together in the Controller</h2>
+<h2 id="controller">2.2 PrimeFinderController</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-guides/micronaut-function-graalvm-aws-lambda-gateway/edit/master/src/main/docs/guide/writingTheApp/controller.adoc"'>
@@ -476,7 +359,150 @@ public class VatService {
 <p>So unlike the previous guide, this lambda operates just like a standard Micronaut app.</p>
 </div>
 <div class="paragraph">
-<p>We&#8217;ll replace the <code>ExampleController.java</code> with with a <code>VatValidatorController</code>, similar to the</p>
+<p>Let&#8217;s add a small wrapper class for our responses, so we can communicate errors</p>
+</div>
+<div class="listingblock">
+<div class="title">prime-finder/src/main/java/example.micronaut.PrimeFinderResponse.java</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package example.micronaut;
+
+import io.micronaut.core.annotation.Introspected;
+
+import java.util.List;
+
+@Introspected <i class="conum" data-value="1"></i><b>(1)</b>
+public class PrimeFinderResponse {
+    public PrimeFinderResponse() {
+    }
+
+    public PrimeFinderResponse(List&lt;Integer&gt; listOfPrimes, String message) {
+        this.listOfPrimes = listOfPrimes;
+        this.message = message;
+    }
+
+    public List&lt;Integer&gt; getListOfPrimes() {
+        return listOfPrimes;
+    }
+
+    public void setListOfPrimes(List&lt;Integer&gt; listOfPrimes) {
+        this.listOfPrimes = listOfPrimes;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    private List&lt;Integer&gt; listOfPrimes;
+    private String message;
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Note: it&#8217;s important for this class to be <code>@Introspected</code> for it to work within Graal!</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Then, we&#8217;ll replace the <code>ExampleController.java</code> with with a <code>PrimeFinderController</code> that utilizes
+our service from the previous step.</p>
+</div>
+<div class="listingblock">
+<div class="title">prime-finder/src/main/java/example.micronaut.PrimeFinderController.java</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package example.micronaut;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import io.micronaut.http.annotation.*;
+
+import javax.inject.Inject;
+
+@Controller("/") <i class="conum" data-value="1"></i><b>(1)</b>
+public class PrimeFinderController {
+    private static final Logger LOG = LoggerFactory.getLogger(PrimeFinderController.class); <i class="conum" data-value="2"></i><b>(2)</b>
+
+    private PrimeFinderService primeFinderService;
+
+    @Inject <i class="conum" data-value="3"></i><b>(3)</b>
+    PrimeFinderController(PrimeFinderService service) {
+        primeFinderService = service;
+    }
+
+    @Get("/find-primes-below/{number}")
+    public PrimeFinderResponse findPrimesBelow(int number) {
+        if(number &gt;= primeFinderService.MAX_SIZE) {
+            LOG.info("This number is too big, you can't possibly want to know all the primes below a number this big.");
+            return new PrimeFinderResponse(
+                    new ArrayList(),
+                    "This service only returns lists for numbers below " + primeFinderService.MAX_SIZE
+            );
+        }
+        LOG.debug("Computing all the primes smaller than " + number + "...");
+        return new PrimeFinderResponse(primeFinderService.findPrimesLessThan(number), "Success");
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Note this is just like a regular Micronaut controller, using the <code>@Controller</code> annotation</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Be sure to add a <code>LOG</code> so that you will be able to see log output in CloudWatch</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>We want to use constructor-based injection to get our <code>PrimeFinderService</code> in the controller</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>We&#8217;ll also want to modify the <code>logback.xml</code> to set the DEBUG level for our <code>example.micronaut</code> package.</p>
+</div>
+<div class="listingblock">
+<div class="title">prime-finder/src/main/resources/logback.xml</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;configuration&gt;
+
+    &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"&gt;
+        &lt;withJansi&gt;true&lt;/withJansi&gt;
+        &lt;!-- encoders are assigned the type
+             ch.qos.logback.classic.encoder.PatternLayoutEncoder by default --&gt;
+        &lt;encoder&gt;
+            &lt;pattern&gt;%cyan(%d{HH:mm:ss.SSS}) %gray([%thread]) %highlight(%-5level) %magenta(%logger{36}) - %msg%n&lt;/pattern&gt;
+        &lt;/encoder&gt;
+    &lt;/appender&gt;
+
+    &lt;root level="info"&gt;
+        &lt;appender-ref ref="STDOUT" /&gt;
+    &lt;/root&gt;
+    &lt;logger name="example.micronaut" level="DEBUG"/&gt; &lt;!-- &lt;1&gt; --&gt;
+&lt;/configuration&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This is the line we need to add, that sets the log level to DEBUG for our package</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Now we&#8217;re ready to start running the application!</p>
 </div>
 
 
@@ -490,7 +516,155 @@ public class VatService {
 
 
 <div class="paragraph">
-<p>To run the application use the <code>./gradlew run</code> command which will start the application on port 8080.</p>
+<p>There are several different ways we can run this application, so let&#8217;s walk through them from least to most complicated.</p>
+</div>
+
+
+<h2 id="simpleRun">3.1 It's just like any other app</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-guides/micronaut-function-graalvm-aws-lambda-gateway/edit/master/src/main/docs/guide/runningTheApp/simpleRun.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>For starters, it&#8217;s worth pointing out briefly that at the core, this is just like any other
+Micronaut app you might build. To test changes in functionality quickly and locally, we can run
+<code>./gradlew run</code> just like an app built without the <code>--features aws-api-gateway-graal</code>.</p>
+</div>
+<div class="paragraph">
+<p>Take this opportunity quickly to ensure you&#8217;ve been following along successfully and start the app.</p>
+</div>
+<div class="paragraph">
+<p><code>./gradlew run</code></p>
+</div>
+<div class="paragraph">
+<p>Then, try out a few <code>curl</code> commands (or whichever http client you like to test APIs best)!</p>
+</div>
+<div class="paragraph">
+<p><code>$ curl localhost:8080/find-primes-below/1000</code></p>
+</div>
+
+
+<h2 id="samLocal">3.2 Running Lambda Locally via SAM</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-guides/micronaut-function-graalvm-aws-lambda-gateway/edit/master/src/main/docs/guide/runningTheApp/samLocal.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This step is optional. To follow along, you&#8217;ll need the
+<a href="https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html">AWS SAM CLI tool</a>
+installed locally.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The <strong>S</strong> erverless <strong>A</strong> pplication <strong>M</strong> odel, or <a href="https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html">SAM</a>,
+is a framework for defining an application using a serverless architecture.</p>
+</div>
+<div class="paragraph">
+<p>It is also a CLI tool provided by Amazon to mock the AWS environment locally.</p>
+</div>
+<div class="paragraph">
+<p>This is going to allow us to run our Micronaut app as a graal native image, within an AWS Lambda custom runtime, all on our own machine.</p>
+</div>
+<div class="paragraph">
+<p>The Micronaut team have provided a simple shell script in the <code>aws-api-gateway-graal</code> feature called <code>sam-local.sh</code>, which
+builds the app into a Graal native image via Docker and packages it with the required <code>bootstrap</code> file for AWS Lambda custom runtimes into a simple <code>zip</code>.</p>
+</div>
+<div class="paragraph">
+<p>It then executes the SAM CLI tool with the (also included) <code>sam.yaml</code> file, which describes the Cloudformation architecture of our Serverless
+application (in this case, it is simple one endpoint, run via Lambda and triggered via the API Gateway)</p>
+</div>
+<div class="listingblock">
+<div class="title">prime-finder/sam-local.sh</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">#!/bin/sh
+docker build . -t prime-finder <i class="conum" data-value="1"></i><b>(1)</b>
+mkdir -p build
+docker run --rm --entrypoint cat prime-finder  /home/application/function.zip &gt; build/function.zip <i class="conum" data-value="2"></i><b>(2)</b>
+
+sam local start-api -t sam.yaml -p 3000 <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>We build the application zip in a docker container (see the dockerfile below)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>This extracts the <code>function.zip</code> file built by the docker container to the <code>build/</code> directory, for use by <code>sam-local</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>This is the command to run our infrastructure locally</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Try running this yourself, via</p>
+</div>
+<div class="paragraph">
+<p><code>./sam-local.sh</code></p>
+</div>
+<div class="paragraph">
+<p>And then (after some time, building the native image in docker and orchestrating the SAM environment can take a couple minutes),
+try <code>curl</code> ing your endpoint (it should start up on port 3000 within the SAM docker container, forwarded to your machine)</p>
+</div>
+<div class="paragraph">
+<p><code>curl localhost:3000/find-primes-below/999</code></p>
+</div>
+
+
+<h2 id="deployToLambda">3.3 Deploying to AWS Lambda</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-guides/micronaut-function-graalvm-aws-lambda-gateway/edit/master/src/main/docs/guide/runningTheApp/deployToLambda.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>Now it&#8217;s time to try things out in AWS!</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+We&#8217;ve included a <code>deploy.sh</code> file that takes care of all of the following.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>First we need to build the <code>zip</code> file that comprises our AWS Lambda custom runtime (if )</p>
+</div>
+<div class="listingblock">
+<div class="title">Building the Function.zip deployable</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">  docker build . -t prime-finder
+  mkdir -p build
+  docker run --rm --entrypoint cat prime-finder  /home/application/function.zip &gt; build/function.zip</code></pre>
+</div>
 </div>
 
 </article>

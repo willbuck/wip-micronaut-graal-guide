@@ -5,23 +5,10 @@ a plugin that downloads and caches WebDriver binaries specific to the OS the bui
 [source,groovy]
 .build.gradle
 ----
-buildscript {
-    repositories {
+plugins {
 ...
 ..
-    }
-    dependencies {
 include::{sourceDir}/build.gradle[tag=buildscriptDependenciesWebdriverBinaries]
-    }
-}
-
-include::{sourceDir}/build.gradle[tag=applyPluginWebdriverBinaries]
-
-
-dependencies {
-...
-..
-.
 }
 
 include::{sourceDir}/build.gradle[tag=webdriverBinaries]

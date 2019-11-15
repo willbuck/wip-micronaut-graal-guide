@@ -110,10 +110,20 @@ to <strong>native</strong> byte-code, Graal can be run in AWS Lambda&#8217;s "Cu
 cold startup times.</p>
 </div>
 <div class="paragraph">
-<p>In this guide you are going to expand the previous example&#8217;s learnings to&#8230;&#8203;
-1. Build a GraalVM Micronaut Lambda, complete with API server-like routing via <a href="https://aws.amazon.com/api-gateway/">AWS&#8217;s API Gateway</a>
-2. Learn how to run the Lambda locally in a facsimile of AWS&#8217;s infrastructure through a cli-tool called SAM.
-3. Learn how to deploy and manage the Lambda via AWS&#8217;s cloudfront cli tools.</p>
+<p>In this guide you are going to expand the previous example&#8217;s learnings to&#8230;&#8203;</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Build a GraalVM Micronaut Lambda, complete with API server-like routing via <a href="https://aws.amazon.com/api-gateway/">AWS&#8217;s API Gateway</a></p>
+</li>
+<li>
+<p>Learn how to run the Lambda locally in a facsimile of AWS&#8217;s infrastructure through a cli-tool called SAM.</p>
+</li>
+<li>
+<p>Learn how to deploy and manage the Lambda via AWS&#8217;s cloudfront cli tools.</p>
+</li>
+</ol>
 </div>
 
 
@@ -142,13 +152,15 @@ cold startup times.</p>
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>You will also want the following:</p>
-</div>
+<div class="sect2">
+<h3 id="_you_will_also_want_the_following">You will also want the following:</h3>
 <div class="ulist">
 <ul>
 <li>
-<p>An AWS Account <a href="https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/">here&#8217;s how to start one</a></p>
+<p>An AWS Account <a href="https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/">(here&#8217;s how to start one)</a></p>
+</li>
+<li>
+<p>A local install of <a href="https://docs.docker.com/v17.09/engine/installation/">docker</a>, which is used to build the lambda</p>
 </li>
 <li>
 <p>The Micronaut CLI tool, installed via</p>
@@ -161,18 +173,19 @@ cold startup times.</p>
 <div class="paragraph">
 <p>(<a href="https://sdkman.io/install">Here&#8217;s a link to install sdkman if you don&#8217;t already have it</a>)</p>
 </div>
+</div>
+<div class="sect2">
+<h3 id="_you_may_also_optionally_want">You may also, optionally, want</h3>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://docs.docker.com/v17.09/engine/installation/">local install of docker, which is used to build the lambda</a></p>
+<p>The AWS <a href="https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html">SAM CLI tool</a>, to test deploying the Lambda architecture locally (so there&#8217;s no surprises in AWS proper!)</p>
 </li>
 <li>
-<p>To test the architecture locally, you&#8217;ll want the <a href="https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html">AWS SAM CLI tool</a></p>
-</li>
-<li>
-<p>To deploy your code you&#8217;ll also want the <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html">AWS CLI tool</a></p>
+<p>The <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html">AWS CLI tool</a>, which can be used to deploy your entire architecture from the command line</p>
 </li>
 </ul>
+</div>
 </div>
 
 

@@ -71,6 +71,20 @@ function addJsClass() {
                 </div>
 
                 
+                <div id="table-of-content">
+                    <h2>Table of Contents</h2>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#simpleRun"><strong>3.1</strong><span>It's just like any other app</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#samLocal"><strong>3.2</strong><span>Running Lambda Locally via SAM</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#deployToLambda"><strong>3.3</strong><span>Deploying to AWS Lambda</span></a>
+                    </div>
+                    
+                </div>
+                
 
                 
 
@@ -84,7 +98,155 @@ function addJsClass() {
 
 
 <div class="paragraph">
-<p>To run the application use the <code>./gradlew run</code> command which will start the application on port 8080.</p>
+<p>There are several different ways we can run this application, so let&#8217;s walk through them from least to most complicated.</p>
+</div>
+
+
+<h2 id="simpleRun">3.1 It's just like any other app</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-guides/micronaut-function-graalvm-aws-lambda-gateway/edit/master/src/main/docs/guide/runningTheApp/simpleRun.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>For starters, it&#8217;s worth pointing out briefly that at the core, this is just like any other
+Micronaut app you might build. To test changes in functionality quickly and locally, we can run
+<code>./gradlew run</code> just like an app built without the <code>--features aws-api-gateway-graal</code>.</p>
+</div>
+<div class="paragraph">
+<p>Take this opportunity quickly to ensure you&#8217;ve been following along successfully and start the app.</p>
+</div>
+<div class="paragraph">
+<p><code>./gradlew run</code></p>
+</div>
+<div class="paragraph">
+<p>Then, try out a few <code>curl</code> commands (or whichever http client you like to test APIs best)!</p>
+</div>
+<div class="paragraph">
+<p><code>$ curl localhost:8080/find-primes-below/1000</code></p>
+</div>
+
+
+<h2 id="samLocal">3.2 Running Lambda Locally via SAM</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-guides/micronaut-function-graalvm-aws-lambda-gateway/edit/master/src/main/docs/guide/runningTheApp/samLocal.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This step is optional. To follow along, you&#8217;ll need the
+<a href="https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html">AWS SAM CLI tool</a>
+installed locally.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The <strong>S</strong> erverless <strong>A</strong> pplication <strong>M</strong> odel, or <a href="https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html">SAM</a>,
+is a framework for defining an application using a serverless architecture.</p>
+</div>
+<div class="paragraph">
+<p>It is also a CLI tool provided by Amazon to mock the AWS environment locally.</p>
+</div>
+<div class="paragraph">
+<p>This is going to allow us to run our Micronaut app as a graal native image, within an AWS Lambda custom runtime, all on our own machine.</p>
+</div>
+<div class="paragraph">
+<p>The Micronaut team have provided a simple shell script in the <code>aws-api-gateway-graal</code> feature called <code>sam-local.sh</code>, which
+builds the app into a Graal native image via Docker and packages it with the required <code>bootstrap</code> file for AWS Lambda custom runtimes into a simple <code>zip</code>.</p>
+</div>
+<div class="paragraph">
+<p>It then executes the SAM CLI tool with the (also included) <code>sam.yaml</code> file, which describes the Cloudformation architecture of our Serverless
+application (in this case, it is simple one endpoint, run via Lambda and triggered via the API Gateway)</p>
+</div>
+<div class="listingblock">
+<div class="title">prime-finder/sam-local.sh</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">#!/bin/sh
+docker build . -t prime-finder <i class="conum" data-value="1"></i><b>(1)</b>
+mkdir -p build
+docker run --rm --entrypoint cat prime-finder  /home/application/function.zip &gt; build/function.zip <i class="conum" data-value="2"></i><b>(2)</b>
+
+sam local start-api -t sam.yaml -p 3000 <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>We build the application zip in a docker container (see the dockerfile below)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>This extracts the <code>function.zip</code> file built by the docker container to the <code>build/</code> directory, for use by <code>sam-local</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>This is the command to run our infrastructure locally</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Try running this yourself, via</p>
+</div>
+<div class="paragraph">
+<p><code>./sam-local.sh</code></p>
+</div>
+<div class="paragraph">
+<p>And then (after some time, building the native image in docker and orchestrating the SAM environment can take a couple minutes),
+try <code>curl</code> ing your endpoint (it should start up on port 3000 within the SAM docker container, forwarded to your machine)</p>
+</div>
+<div class="paragraph">
+<p><code>curl localhost:3000/find-primes-below/999</code></p>
+</div>
+
+
+<h2 id="deployToLambda">3.3 Deploying to AWS Lambda</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-guides/micronaut-function-graalvm-aws-lambda-gateway/edit/master/src/main/docs/guide/runningTheApp/deployToLambda.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>Now it&#8217;s time to try things out in AWS!</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+We&#8217;ve included a <code>deploy.sh</code> file that takes care of all of the following.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>First we need to build the <code>zip</code> file that comprises our AWS Lambda custom runtime (if )</p>
+</div>
+<div class="listingblock">
+<div class="title">Building the Function.zip deployable</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">  docker build . -t prime-finder
+  mkdir -p build
+  docker run --rm --entrypoint cat prime-finder  /home/application/function.zip &gt; build/function.zip</code></pre>
+</div>
 </div>
 
 
