@@ -1,3 +1,34 @@
 So unlike the previous guide, this lambda operates just like a standard Micronaut app.
 
-We'll replace the `ExampleController.java` with with a `VatValidatorController`, similar to the
+Let's add a small wrapper class for our responses, so we can communicate errors
+
+[source,java]
+.prime-finder/src/main/java/example.micronaut.PrimeFinderResponse.java
+----
+include::{sourceDir}/prime-finder/src/main/java/example/micronaut/PrimeFinderResponse.java[]
+----
+<1> Note: it's important for this class to be `@Introspected` for it to work within Graal!
+
+Then, we'll replace the `ExampleController.java` with with a `PrimeFinderController` that utilizes
+our service from the previous step.
+
+[source,java]
+.prime-finder/src/main/java/example.micronaut.PrimeFinderController.java
+----
+include::{sourceDir}/prime-finder/src/main/java/example/micronaut/PrimeFinderController.java[]
+----
+<1> Note this is just like a regular Micronaut controller, using the `@Controller` annotation
+<2> Be sure to add a `LOG` so that you will be able to see log output in CloudWatch
+<3> We want to use constructor-based injection to get our `PrimeFinderService` in the controller
+
+We'll also want to modify the `logback.xml` to set the DEBUG level for our `example.micronaut` package.
+
+[source,xml]
+.prime-finder/src/main/resources/logback.xml
+----
+include::{sourceDir}/prime-finder/src/main/resources/logback.xml[]
+----
+
+<1> This is the line we need to add, that sets the log level to DEBUG for our package
+
+Now we're ready to start running the application!

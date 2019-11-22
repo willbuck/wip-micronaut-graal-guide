@@ -1,0 +1,62 @@
+Let's get our Lambda an API Gateway trigger!
+
+Navigate to https://console.aws.amazon.com/apigateway/home and click on the "Get Started" button in the middle of the screen.
+If you've created an API Gateway in the past, you'll instead need to click "Create API" in the top right.
+
+You'll be presented with an Example API, but we want to create our own. Select the "New API" radio and give the API a name, then click "Create API"
+
+image::gateway-1-create-inputs.png[]
+
+Now that we have our API, we need to create a catch-all "proxy" resource for our Lambda (we want our Micronaut app to handle routing).
+
+Use the "Actions" dropdown and select "Create Resource"
+
+image::gateway-2-create-resource.png[]
+
+Checking the "Configure as proxy resource" checkbox will automatically fill in the name and path, then we just need to click "Create Resource"
+
+image::gateway-3-proxy.png[]
+
+Next we need to connect this API to our lambda.
+
+"Lambda Function Proxy" should already be selected, so just start typing our lambda's name in the in the
+"Lambda Function" autocomplete box and select it once it pops up. Then click "Save"
+
+image::gateway-4-connect-lambda.png[]
+
+At this point, we can use the AWS console to test out triggering our API, using the "Test" button on the left hand side of
+resource visualization.
+
+image::gateway-5-test-the-api.png[]
+
+As our app is expecting `GET` requests at `/find-primes-below/{number}`, that's how we'll fill in the test details.
+
+image::gateway-6-test-details.png[]
+
+You should receive a 200 response with the list of primes.
+
+image::gateway-7-test-success.png[]
+
+NOTE: If you get an error, check the "Path" input box to ensure it matches the path of your controller method, and check
+the Lambda config to ensure the function zip uploaded successfully.
+
+We're almost to the finish line now! We've confirmed that everything works properly, but our API is not yet publicly accessible.
+
+To make that happen, we need to "Deploy" our API. From the "Actions" dropdown, select "Deploy API"
+
+image::gateway-8-deploy-api.png[]
+
+APIs can be deployed in "Stages". Commonly you might have a "test" and "prod" stage where changes would naturally propagate,
+but for the purposes of this guide we'll just create one new stage called "demo".
+
+image::gateway-9-deploy-details.png[]
+
+Click "Deploy", and we should get the URL for our newly deployed API!
+
+image::gateway-10-deploy-success-url-display.png[]
+
+Now we can use any API client we like to test our new url.
+
+image::gateway-11-curl.png[]
+
+Congratulations! You've got yourself your first Micronaut GraalVM API with AWS!

@@ -11,6 +11,7 @@ to *native* byte-code, Graal can be run in AWS Lambda's "Custom Runtime" environ
 cold startup times.
 
 In this guide you are going to expand the previous example's learnings to...
+
 1. Build a GraalVM Micronaut Lambda, complete with API server-like routing via https://aws.amazon.com/api-gateway/[AWS's API Gateway]
 2. Learn how to run the Lambda locally in a facsimile of AWS's infrastructure through a cli-tool called SAM.
 3. Learn how to deploy and manage the Lambda via AWS's cloudfront cli tools.

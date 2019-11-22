@@ -1,0 +1,16 @@
+Just as any other Micronaut app, we'll want to isolate the "business logic"  of how we compute
+the prime numbers to a service.
+
+As we mentioned previously, the most efficient algorithm to calculate the primes below a given
+number N is the https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes[Sieve of Eratosthenes], which
+steps up from 2 to N and tosses out all the multiples of the given step, so that subsequent passes
+are working with only the leftover numbers on the next pass.
+
+See below for an adaption of
+https://www.geeksforgeeks.org/sieve-eratosthenes-0n-time-complexity/[this O(n) java implementation of the algorithm]
+
+[source,java]
+.prime-finder/src/main/java/example.micronaut.PrimeFinderService.java
+----
+include::{sourceDir}/prime-finder/src/main/java/example/micronaut/PrimeFinderService.java[]
+----

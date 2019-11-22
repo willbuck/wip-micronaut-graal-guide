@@ -1,0 +1,43 @@
+Now it's time to try things out in AWS!
+
+NOTE: We've included a `deploy.sh` file that takes care of all of the lambda deployment, if you'd prefer that to the web-based AWS Console.
+
+First we need to build the `zip` file that comprises our AWS Lambda custom runtime
+(if you followed along with the previous section, you can skip this as `sam-local.sh` already did it for you).
+
+[source,java]
+.Building the Function.zip deployable
+----
+  docker build . -t prime-finder
+  mkdir -p build
+  docker run --rm --entrypoint cat prime-finder  /home/application/function.zip > build/function.zip
+----
+
+Now we'll want to navigate to https://console.aws.amazon.com/lambda/home and click `Create function`
+
+image::lambda-1-create-fn.png[]
+
+We'll be prompted for some inputs, so fill out the "Function name" as "prime-finder" and choose the "Runtime" to be
+"Custom runtime -> Provide your own bootstrap" under
+
+image::lambda-2-create-inputs.png[]
+
+image::lambda-3-create-custom-runtime-detail.png[]
+
+Now under "Permissions" at the bottom, we'll need to create a new lambda execution role. AWS can take care of this for you,
+just select the first radio button!
+
+image::lambda-4-create-role.png[]
+
+You should be brought to a new page to finish configuring the detail of your new "prime-finder" lambda.
+
+Next we need to upload the `function.zip` file that docker placed in our `build/` directory using the "Code entry type" dropdown.
+
+image::lambda-5-add-code-zip.png[]
+
+Finally, we have to click "Save" up in the top right, and wait for the zip to finish uploading,
+which may take 20-30 seconds.
+
+image::lambda-6-lambda-6-wait-for-save.png[]
+
+And we have our lambda! Clicking "Test" on this page isn't going to do much of anything, as we still need the second piece of the puzzle.

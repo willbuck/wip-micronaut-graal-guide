@@ -4,8 +4,11 @@ gettingStarted:
   solution: Solution
 writingTheApp:
   title: Writing the Application
-  vatpojos: POJOs
-  soap: VAT SOAP Service
-  controller: Putting it all together in the Controller
+  service: PrimeFinderService
+  controller: PrimeFinderController
 runningTheApp:
   title: Running the Application
+  simpleRun: It's just like any other app
+  samLocal: Running Lambda Locally via SAM
+  deployToLambda: Deploying to AWS Lambda
+  setupApiGateway: Connecting our Lambda to API Gateway
