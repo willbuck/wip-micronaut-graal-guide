@@ -28,3 +28,6 @@ fi
 aws cloudformation package --template-file sam.yaml --output-template-file packaged-sam.yaml --s3-bucket ${S3_BUCKET_NAME}
 aws cloudformation deploy --template-file ./packaged-sam.yaml --stack-name MicronautGraalVmDemo --capabilities CAPABILITY_IAM
 aws cloudformation describe-stacks --stack-name MicronautGraalVmDemo --query "Stacks[0].Outputs[0].OutputValue"| cut -d \" -f 2
+
+# To delete everything
+#aws cloudformation delete-stack --stack-name MicronautGraalVmDemo
