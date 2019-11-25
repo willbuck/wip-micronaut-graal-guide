@@ -7,7 +7,7 @@ Let's add a small wrapper class for our responses, so we can communicate errors
 ----
 include::{sourceDir}/prime-finder/src/main/java/example/micronaut/PrimeFinderResponse.java[]
 ----
-<1> Note: it's important for this class to be `@Introspected` for it to work within Graal!
+<1> Note: it's important for this class to be `@Introspected` for it to work within GraalVM.
 
 Then, we'll replace the `ExampleController.java` with with a `PrimeFinderController` that utilizes
 our service from the previous step.

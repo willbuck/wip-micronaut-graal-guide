@@ -15,12 +15,12 @@ class PrimeFinderService {
     // SPF[] that store smallest prime factor of number
     // [for Exp : smallest prime factor of '8' and '16'
     // is '2' so we put SPF[8] = 2 , SPF[16] = 2 ]
-    Vector<Boolean>isPrime = new Vector<>(MAX_SIZE);
-    Vector<Integer>SPF = new Vector<>(MAX_SIZE);
+    private Vector<Boolean> isPrime = new Vector<>(MAX_SIZE);
+    private Vector<Integer> SPF = new Vector<>(MAX_SIZE);
 
     PrimeFinderService() {
         // Init the isPrime and SPF vectors
-        for (int i = 0; i < MAX_SIZE; i++){
+        for (int i = 0; i < MAX_SIZE; i++) {
             isPrime.add(true);
             SPF.add(2);
         }
@@ -31,7 +31,7 @@ class PrimeFinderService {
 
     List<Integer> findPrimesLessThan(int n) {
         // Fill in the rest of the entries
-        List<Integer>prime = new ArrayList<>();
+        List<Integer> prime = new ArrayList<>();
         for (int i = 2; i < n; i++) {
             // If isPrime[i] == True then i is
             // prime number

@@ -8,9 +8,9 @@ First we need to build the `zip` file that comprises our AWS Lambda custom runti
 [source,java]
 .Building the Function.zip deployable
 ----
-  docker build . -t prime-finder
-  mkdir -p build
-  docker run --rm --entrypoint cat prime-finder  /home/application/function.zip > build/function.zip
+docker build . -t prime-finder
+mkdir -p build
+docker run --rm --entrypoint cat prime-finder  /home/application/function.zip > build/function.zip
 ----
 
 Now we'll want to navigate to https://console.aws.amazon.com/lambda/home and click `Create function`
@@ -38,6 +38,6 @@ image::lambda-5-add-code-zip.png[]
 Finally, we have to click "Save" up in the top right, and wait for the zip to finish uploading,
 which may take 20-30 seconds.
 
-image::lambda-6-lambda-6-wait-for-save.png[]
+image::lambda-6-wait-for-save.png[]
 
 And we have our lambda! Clicking "Test" on this page isn't going to do much of anything, as we still need the second piece of the puzzle.

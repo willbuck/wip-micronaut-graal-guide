@@ -2,7 +2,7 @@ We'll be keeping it simple and creating a controller to find all the prime numbe
 using the https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes[Sieve of Eratosthenes].
 
 To do this, we'll be using the `aws-api-gateway-graal` feature starter of a standard Micronaut App,
-which scaffolds a lot of what we need to deploy an AWS Lambda in a custom runtime w/ API Gateway triggers.
+which scaffolds a lot of what we need to deploy an AWS Lambda in a custom runtime with API Gateway triggers.
 
 Use the following command to create our app:
 

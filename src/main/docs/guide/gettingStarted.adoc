@@ -4,7 +4,7 @@ you to breakdown a typical microservices architecture into what I might call "Am
 on-demand pieces that allow businesses to run infrequently used pieces of code very cheaply.
 
 However, the one disadvantage of this pattern is that Java runtime in AWS Lambda can have long
-"cold startup" times (the first time a service is used over a 5-20 minute period).
+"cold startup" times (the first time a service is used over a 5-20 second period).
 
 This is where https://www.graalvm.org/[GraalVM] enters the picture. Allowing compilation of JVM languages
 to *native* byte-code, Graal can be run in AWS Lambda's "Custom Runtime" environment and significantly improve

@@ -6,6 +6,7 @@ import java.util.List;
 
 @Introspected // <1>
 public class PrimeFinderResponse {
+
     public PrimeFinderResponse() {
     }
 
