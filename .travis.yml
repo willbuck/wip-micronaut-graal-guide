@@ -1,9 +1,13 @@
 sudo: false
+jdk:
+  - openjdk8
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 cache:
   directories:
-  - $HOME/.gradle
-jdk:
-- oraclejdk8
-before_script:
-- rm -rf target
-script: ./travis-build.sh
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+script:
+  - ./travis-build-pr.sh
+  - if [[ $TRAVIS_PULL_REQUEST == "false" ]] && [[ $TRAVIS_BRANCH == "master" ]]; then bash ./travis-build.sh; fi
