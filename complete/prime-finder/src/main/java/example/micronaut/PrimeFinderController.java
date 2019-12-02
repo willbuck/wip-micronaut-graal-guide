@@ -20,13 +20,17 @@ public class PrimeFinderController {
     @Get("/find-primes-below/{number}")
     public PrimeFinderResponse findPrimesBelow(int number) {
         if (number >= primeFinderService.MAX_SIZE) {
-            LOG.info("This number is too big, you can't possibly want to know all the primes below a number this big.");
+            if (LOG.isInfoEnabled()) {
+                LOG.info("This number is too big, you can't possibly want to know all the primes below a number this big.");
+            }
             return new PrimeFinderResponse(
                     new ArrayList<Integer>(),
                     "This service only returns lists for numbers below " + primeFinderService.MAX_SIZE
             );
         }
-        LOG.debug("Computing all the primes smaller than " + number + "...");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Computing all the primes smaller than {} ...", number);
+        }
         return new PrimeFinderResponse(primeFinderService.findPrimesLessThan(number), "Success");
     }
 }
