@@ -4,7 +4,7 @@ import io.micronaut.core.annotation.Introspected;
 
 import java.util.List;
 
-@Introspected // <1>
+@Introspected
 public class PrimeFinderResponse {
 
     private List<Integer> listOfPrimes;
