@@ -7,6 +7,9 @@ import java.util.List;
 @Introspected // <1>
 public class PrimeFinderResponse {
 
+    private List<Integer> listOfPrimes;
+    private String message;
+
     public PrimeFinderResponse() {
     }
 
@@ -31,6 +34,4 @@ public class PrimeFinderResponse {
         this.message = message;
     }
 
-    private List<Integer> listOfPrimes;
-    private String message;
 }
