@@ -1,9 +1,49 @@
+Using https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html[Lambda Proxy Integration in API Gateway] allows you to code a serveless application as you would normally code a traditional app, with controllers to handle HTTP requests.
+
+Use the micronaut feature `aws-api-gateway-graal` to create an app ready to be deployed to AWS Lambda with Custom runtime:
+
+[source,bash]
+----
+mn create-app example.micronaut.complete --features aws-api-gateway-graal
+----
+
+`aws-api-gateway-graal` feature includes the `micronaut-function-aws-custom-runtime` dependency which includes the `MicronautLambdaRuntime` class, an implementation that you can use to execute a custom runtime as described in AWS documentation https://docs.aws.amazon.com/lambda/latest/dg/runtimes-walkthrough.html[Publishing a custom runtime].
+
+
+[source, groovy]
+.build.gradle
+----
+dependencies {
+...
+include::{sourceDir}/build.gradle[tag=micronaut-function-aws-custom-runtime]
+}
+----
+
+Moreover, `aws-api-gateway-graal` feature includes the `micronaut-function-aws-api-proxy` dependency which adds the Micronaut support for the https://github.com/awslabs/aws-serverless-java-container[AWS Serverless Java Container] project.
+
+[source, groovy]
+.build.gradle
+----
+dependencies {
+...
+include::{sourceDir}/build.gradle[tag=micronaut-function-aws-api-proxy]
+}
+----
+
+Moreover, we have moved the dependencies (`micronaut-http-server-netty` and `micronaut-http-client`) to the test classpath. **It is important to remove unused dependencies**.
+:
+
+[source, groovy]
+.build.gradle
+----
+dependencies {
+...
+include::{sourceDir}/build.gradle[tag=micronauthttpclient]
+include::{sourceDir}/build.gradle[tag=micronauthttpservernetty]
+}
+----
+
+
 We'll be keeping it simple and creating a controller to find all the prime numbers less than N,
 using the https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes[Sieve of Eratosthenes].
 
-To do this, we'll be using the `aws-api-gateway-graal` feature starter of a standard Micronaut App,
-which scaffolds a lot of what we need to deploy an AWS Lambda in a custom runtime with API Gateway triggers.
-
-Use the following command to create our app:
-
-`mn create-app example.micronaut.prime-finder --features aws-api-gateway-graal`

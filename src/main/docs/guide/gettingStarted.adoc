@@ -1,17 +1,27 @@
-A previous guide written by https://twitter.com/sdelamo[Sergio Delamo] walked us through how to
-get started with Micronaut and AWS Lambda, the serverless, functional offering from Amazon that allows
-you to breakdown a typical microservices architecture into what I might call "Amazon Legos". Bite-sized,
-on-demand pieces that allow businesses to run infrequently used pieces of code very cheaply.
+https://aws.amazon.com/lambda/[AWS Lambda] is a dynamically scaled and billed-per-execution compute service. Instances of Lambdas are added and removed dynamically.
 
-However, the one disadvantage of this pattern is that Java runtime in AWS Lambda can have long
-"cold startup" times (the first time a service is used over a 5-20 second period).
+When a new instance handles its first request, the response time increases, which is called a cold start. After that request is processed, the instance stays alive (≈10 m) to be reused for subsequent requests.
 
-This is where https://www.graalvm.org/[GraalVM] enters the picture. Allowing compilation of JVM languages
-to *native* byte-code, Graal can be run in AWS Lambda's "Custom Runtime" environment and significantly improve
-cold startup times.
+In the guide https://guides.micronaut.io/micronaut-function-aws-lambda/guide/index.html[Micronaut Functions deployed in AWS Lambda], we used the **Java runtime**. Cold startups may cause some request to take more than 5 seconds.
 
-In this guide you are going to expand the previous example's learnings to...
+To get rid of cold startups, in this guide, we combine several technologies:
 
-1. Build a GraalVM Micronaut Lambda, complete with API server-like routing via https://aws.amazon.com/api-gateway/[AWS's API Gateway]
-2. Learn how to run the Lambda locally in a facsimile of AWS's infrastructure through a cli-tool called SAM.
-3. Learn how to deploy and manage the Lambda via AWS's cloudfront cli tools.
+https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html[**Lambda Proxy Integration in API Gateway**]:
+
+____
+In Lambda proxy integration, when a client submits an API request, API Gateway passes to the integrated Lambda function the raw request as-is.
+
+This request data includes the request headers, query string parameters, URL path variables, payload, and API configuration data. The configuration data can include current deployment stage name, stage variables, user identity, or authorization context (if any).
+____
+
+https://docs.aws.amazon.com/lambda/latest/dg/runtimes-custom.html[**Custom AWS Lambda Runtimes**]:
+
+____
+A runtime is a program that runs a Lambda function's handler method when the function is invoked. You can include a runtime in your function's deployment package in the form of an executable file named bootstrap.
+____
+
+https://www.graalvm.org/docs/reference-manual/native-image/[**GraalVM Native Images**]:
+
+____
+GraalVM Native Image allows you to ahead-of-time compile Java code to a standalone executable, called a native image. This executable includes the application, the libraries, the JDK and does not run on the Java VM, but includes necessary components like memory management and thread scheduling from a different virtual machine. The resulting program has faster startup time and lower runtime memory overhead compared to a Java VM.
+____

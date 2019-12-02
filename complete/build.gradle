@@ -4,8 +4,6 @@ plugins {
     id "net.ltgt.apt-eclipse" version "0.21"
 }
 
-
-
 version "0.1"
 group "example.micronaut"
 
@@ -21,26 +19,38 @@ configurations {
 
 dependencies {
     annotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
+    //tag::micronaut-graal[]
     annotationProcessor "io.micronaut:micronaut-graal"
+    //end::micronaut-graal[]
     annotationProcessor "io.micronaut:micronaut-inject-java"
     annotationProcessor "io.micronaut:micronaut-validation"
-    compileOnly "com.oracle.substratevm:svm"
+    //tag::svm[]
+    compileOnly "org.graalvm.nativeimage:svm:19.3.0"
+    //end::svm[]
     implementation platform("io.micronaut:micronaut-bom:$micronautVersion")
     implementation "io.micronaut:micronaut-inject"
     implementation "io.micronaut:micronaut-validation"
     implementation "io.micronaut:micronaut-runtime"
+    //tag::micronaut-function-aws-custom-runtime[]
     implementation("io.micronaut.aws:micronaut-function-aws-custom-runtime") {
         exclude group: "com.fasterxml.jackson.module", module: "jackson-module-afterburner"
     }
+    //end::micronaut-function-aws-custom-runtime[]
+    //tag::micronaut-function-aws-api-proxy[]
     implementation("io.micronaut.aws:micronaut-function-aws-api-proxy") {
         exclude group: "com.fasterxml.jackson.module", module: "jackson-module-afterburner"
     }
-    implementation "io.micronaut:micronaut-http-client"
-    implementation "io.micronaut:micronaut-http-server-netty"
+    //end::micronaut-function-aws-api-proxy[]
     runtimeOnly "ch.qos.logback:logback-classic:1.2.3"
     testAnnotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
     testAnnotationProcessor "io.micronaut:micronaut-inject-java"
     testImplementation platform("io.micronaut:micronaut-bom:$micronautVersion")
+    //tag::micronauthttpclient[]
+    testImplementation "io.micronaut:micronaut-http-client"
+    //end::micronauthttpclient[]
+    //tag::micronauthttpservernetty[]
+    testImplementation "io.micronaut:micronaut-http-server-netty"
+    //end::micronauthttpservernetty[]
     testImplementation "org.junit.jupiter:junit-jupiter-api"
     testImplementation "io.micronaut.test:micronaut-test-junit5"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"

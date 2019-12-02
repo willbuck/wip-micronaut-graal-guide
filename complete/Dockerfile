@@ -4,14 +4,10 @@ WORKDIR /home/application
 RUN gradle build --no-daemon
 
 FROM amazonlinux:2018.03.0.20191014.0 as graalvm
-# install graal to amazon linux.
+
 ENV LANG=en_US.UTF-8
 
-
-RUN yum install -y gcc gcc-c++ libc6-dev  zlib1g-dev curl bash zlib zlib-devel zip  \
-#    && yum install -y libcxx libcxx-devel llvm-toolset-7 \
-    && rm -rf /var/cache/yum
-
+RUN yum install -y gcc gcc-c++ libc6-dev  zlib1g-dev curl bash zlib zlib-devel zip
 
 ENV GRAAL_VERSION 19.3.0
 ENV GRAAL_FILENAME graalvm-ce-java8-linux-amd64-${GRAAL_VERSION}.tar.gz

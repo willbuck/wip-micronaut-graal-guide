@@ -1,3 +1,5 @@
 Read more about https://docs.micronaut.io/latest/guide/index.html#serverlessFunctions[Serverless Functions] inside Micronaut.
 
+Read more about https://micronaut-projects.github.io/micronaut-aws/latest/guide/index.html#lambda[Micronaut Lambda support] within Micronaut.
+
 Learn more https://docs.micronaut.io/latest/guide/index.html#graal[Micronaut for GraalVM] integration.

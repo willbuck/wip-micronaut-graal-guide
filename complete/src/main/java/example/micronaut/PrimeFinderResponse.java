@@ -7,23 +7,18 @@ import java.util.List;
 @Introspected
 public class PrimeFinderResponse {
 
-    private List<Integer> listOfPrimes;
     private String message;
+    private List<Integer> primes;
 
     public PrimeFinderResponse() {
     }
 
-    public PrimeFinderResponse(List<Integer> listOfPrimes, String message) {
-        this.listOfPrimes = listOfPrimes;
-        this.message = message;
+    public List<Integer> getPrimes() {
+        return primes;
     }
 
-    public List<Integer> getListOfPrimes() {
-        return listOfPrimes;
-    }
-
-    public void setListOfPrimes(List<Integer> listOfPrimes) {
-        this.listOfPrimes = listOfPrimes;
+    public void setPrimes(List<Integer> primes) {
+        this.primes = primes;
     }
 
     public String getMessage() {
@@ -33,5 +28,5 @@ public class PrimeFinderResponse {
     public void setMessage(String message) {
         this.message = message;
     }
-
 }
+

@@ -1,6 +1,6 @@
 So unlike the previous guide, this lambda operates just like a standard Micronaut app.
 
-Let's add a small wrapper class for our responses, so we can communicate errors
+Let's add a small wrapper class for our responses.
 
 [source,java]
 .src/main/java/example.micronaut.PrimeFinderResponse.java
@@ -30,4 +30,10 @@ include::{sourceDir}/src/main/resources/logback.xml[]
 
 <1> This is the line we need to add, that sets the log level to DEBUG for our package
 
-Now we're ready to start running the application!
+You can test your servless app as you would normally test your app:
+
+[source,java]
+.src/test/java/example.micronaut.PrimeFinderControllerTest.java
+----
+include::{sourceDir}/src/test/java/example/micronaut/PrimeFinderControllerTest.java[]
+----

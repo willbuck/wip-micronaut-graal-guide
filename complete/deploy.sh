@@ -4,6 +4,7 @@ if [ ! "${1}" == "skip-build" ]; then
   docker build . -t prime-finder
   mkdir -p build
   docker run --rm --entrypoint cat prime-finder  /home/application/function.zip > build/function.zip
+  docker image rm prime-finder
 fi
 
 

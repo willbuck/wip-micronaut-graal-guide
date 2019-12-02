@@ -6,11 +6,8 @@ writingTheApp:
   title: Writing the Application
   service: PrimeFinderService
   controller: PrimeFinderController
-runningTheApp:
-  title: Running the Application
-  simpleRun: It's just like any other app
-  samLocal: Running Lambda Locally via SAM
-  deployToLambda: Deploying to AWS Lambda
-  setupApiGateway: Connecting our Lambda to API Gateway
+samLocal: Running Lambda Locally via SAM
+deployToLambda: Deploying to AWS Lambda
+setupApiGateway: Connecting our Lambda to API Gateway
 nextSteps:
   title: Next Steps

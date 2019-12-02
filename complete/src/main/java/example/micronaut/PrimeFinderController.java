@@ -5,8 +5,6 @@ import io.micronaut.http.annotation.Get;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-
 @Controller("/") // <1>
 public class PrimeFinderController {
     private static final Logger LOG = LoggerFactory.getLogger(PrimeFinderController.class); // <2>
@@ -19,18 +17,19 @@ public class PrimeFinderController {
 
     @Get("/find-primes-below/{number}")
     public PrimeFinderResponse findPrimesBelow(int number) {
+        PrimeFinderResponse resp = new PrimeFinderResponse();
         if (number >= primeFinderService.MAX_SIZE) {
             if (LOG.isInfoEnabled()) {
                 LOG.info("This number is too big, you can't possibly want to know all the primes below a number this big.");
             }
-            return new PrimeFinderResponse(
-                    new ArrayList<Integer>(),
-                    "This service only returns lists for numbers below " + primeFinderService.MAX_SIZE
-            );
+            resp.setMessage("This service only returns lists for numbers below " + primeFinderService.MAX_SIZE);
+            return resp;
         }
         if (LOG.isDebugEnabled()) {
             LOG.debug("Computing all the primes smaller than {} ...", number);
         }
-        return new PrimeFinderResponse(primeFinderService.findPrimesLessThan(number), "Success");
+        resp.setMessage("Success!");
+        resp.setPrimes(primeFinderService.findPrimesLessThan(number));
+        return resp;
     }
 }

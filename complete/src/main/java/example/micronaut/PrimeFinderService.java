@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Vector;
 
 @Singleton
-class PrimeFinderService {
+public class PrimeFinderService {
     // Credit to https://www.geeksforgeeks.org/sieve-eratosthenes-0n-time-complexity/
     // for this clever O(n) implementation of the Sieve
     public final int MAX_SIZE = 1000001;
@@ -18,7 +18,9 @@ class PrimeFinderService {
     private Vector<Boolean> isPrime = new Vector<>(MAX_SIZE);
     private Vector<Integer> SPF = new Vector<>(MAX_SIZE);
 
-    PrimeFinderService() {
+    public PrimeFinderService() {
+        long startTime = System.currentTimeMillis();
+
         // Init the isPrime and SPF vectors
         for (int i = 0; i < MAX_SIZE; i++) {
             isPrime.add(true);
@@ -27,9 +29,11 @@ class PrimeFinderService {
         // 0 and 1 are not prime
         isPrime.set(0, false);
         isPrime.set(1, false);
+        long endTime = System.currentTimeMillis();
+        System.out.println("Total execution time: " + (endTime-startTime) + "ms");
     }
 
-    List<Integer> findPrimesLessThan(int n) {
+    public List<Integer> findPrimesLessThan(int n) {
         // Fill in the rest of the entries
         List<Integer> prime = new ArrayList<>();
         for (int i = 2; i < n; i++) {
