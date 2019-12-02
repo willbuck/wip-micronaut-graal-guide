@@ -10,7 +10,7 @@ See below for an adaption of
 https://www.geeksforgeeks.org/sieve-eratosthenes-0n-time-complexity/[this O(n) java implementation of the algorithm]
 
 [source,java]
-.prime-finder/src/main/java/example.micronaut.PrimeFinderService.java
+.src/main/java/example.micronaut.PrimeFinderService.java
 ----
-include::{sourceDir}/prime-finder/src/main/java/example/micronaut/PrimeFinderService.java[]
+include::{sourceDir}/src/main/java/example/micronaut/PrimeFinderService.java[]
 ----

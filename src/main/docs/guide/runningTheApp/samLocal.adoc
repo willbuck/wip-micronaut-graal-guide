@@ -18,7 +18,7 @@ application (in this case, it is simple one endpoint, run via Lambda and trigger
 [source,bash]
 .prime-finder/sam-local.sh
 ----
-include::{sourceDir}/prime-finder/sam-local.sh[]
+include::{sourceDir}/sam-local.sh[]
 ----
 <1> We build the application zip in a docker container (see the dockerfile below)
 <2> This extracts the `function.zip` file built by the docker container to the `build/` directory, for use by `sam-local`
