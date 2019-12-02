@@ -31,7 +31,6 @@ RUN /usr/lib/graalvm/bin/gu install native-image
 RUN /usr/lib/graalvm/bin/native-image --no-server -cp build/libs/prime-finder-*-all.jar 
 RUN chmod 755 bootstrap
 RUN chmod 755 server
-RUN cp /usr/lib/graalvm/jre/lib/amd64/libsunec.so libsunec.so
-RUN zip -j function.zip bootstrap server libsunec.so
+RUN zip -j function.zip bootstrap server
 EXPOSE 8080
 ENTRYPOINT ["/home/application/server"]
