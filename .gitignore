@@ -5,3 +5,5 @@ build/*
 *.idea
 complete/prime-finder/packaged-sam.yaml
 .DS_Store
+build
+.gradle
