@@ -11,3 +11,5 @@ deployToLambda: Deploying to AWS Lambda
 setupApiGateway: Connecting our Lambda to API Gateway
 nextSteps:
   title: Next Steps
+help:
+  title: Help with Micronaut  
